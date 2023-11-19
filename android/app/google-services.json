@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "219682843699",
+    "project_id": "mhacks2023",
+    "storage_bucket": "mhacks2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219682843699:android:6ddb1a30509b89d9fb4746",
+        "android_client_info": {
+          "package_name": "com.example.camera_upload"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219682843699-je0rflb5duo6pp7dge11512uupmp5oga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2_cprgMj4FLa-3eWfmjqFQ-xh0PBxNpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219682843699-je0rflb5duo6pp7dge11512uupmp5oga.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "219682843699-can774ml1i0bbr65e7pf7e1g2dvtcl2e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cameraUpload.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
