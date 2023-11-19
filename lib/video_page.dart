@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:video_player/video_player.dart';
+import 'globals.dart' as globals;
+
 
 class VideoPage extends StatefulWidget {
   final String filePath;
@@ -15,13 +17,16 @@ class VideoPage extends StatefulWidget {
 
 class _VideoPageState extends State<VideoPage> {
   late VideoPlayerController _videoPlayerController;
+  late TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
+    _textController = TextEditingController(text: 'File Name');
     _videoPlayerController = VideoPlayerController.file(File(widget.filePath))
       ..initialize().then((_) {
         setState(() {});
+        _videoPlayerController.setLooping(true);
         _videoPlayerController.play();
       });
   }
@@ -37,13 +42,69 @@ class _VideoPageState extends State<VideoPage> {
       File file = File(widget.filePath);
       final storage = FirebaseStorage.instance;
       final User? user = FirebaseAuth.instance.currentUser;
-
       if (user != null) {
-        var ref = storage.ref().child('videos/${user.uid}/${DateTime.now()}.mp4');
-        await ref.putFile(file);
-        print('Video uploaded to Firebase Storage.');
+        showCupertinoModalPopup<void>(
+          context: context,
+          builder: (BuildContext context) => CupertinoAlertDialog(
+            title: const Text('Confirm'),
+            content:  Column(
+              children: [
+                Text('Enter Name and Confirm Upload to Firebase'),
+                SizedBox(height:4),
+                CupertinoTextField(
+                  controller: _textController
+                ),
+              ],
+            ),
+            actions: <CupertinoDialogAction>[
+              CupertinoDialogAction(
+                /// This parameter indicates this action is the default,
+                /// and turns the action's text to bold text.
+                isDefaultAction: true,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('No'),
+              ),
+              CupertinoDialogAction(
+                /// This parameter indicates this action is the default,
+                /// and turns the action's text to bold text.
+                isDefaultAction: true,
+                onPressed: ()async {
+                  Navigator.pushReplacementNamed(context, '/home');
+                  if (_textController.text == ""){
+                    globals.names.add("Unnamed File");
+                  }
+                  else{
+                    globals.names.add(_textController.text);
+                  }
+                  var ref = storage.ref().child('videos/${user.uid}/${DateTime.now()}.mp4');
+                  await ref.putFile(file);
+                  print('Video uploaded to Firebase Storage.');
+                },
+                child: const Text('Yes'),
+              )
+            ],
+          ));
       } else {
         // User not authenticated
+        showCupertinoModalPopup<void>(
+          context: context,
+          builder: (BuildContext context) => CupertinoAlertDialog(
+            title: const Text('Alert'),
+            content: const Text('You Are Not Authenticated'),
+            actions: <CupertinoDialogAction>[
+              CupertinoDialogAction(
+                /// This parameter indicates this action is the default,
+                /// and turns the action's text to bold text.
+                isDefaultAction: true,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Ok'),
+              ),
+            ],
+          ));
         print('User not authenticated.');
       }
     } catch (e) {
